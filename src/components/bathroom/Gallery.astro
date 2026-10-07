@@ -1,0 +1,402 @@
+---
+// 05 Explore the gallery. Cards start as a loose stack in the middle of the
+// grid and fan out into place as the section scrolls into view. Each card
+// is a button that opens an accessible lightbox (native <dialog>: focus is
+// trapped and returned, Esc closes; arrow keys and swipe move between
+// photos). Every photo is labelled as inspiration, not a FORM project.
+// Behaviour: src/scripts/bathroom/gallery.ts.
+import { gallery } from "../../data/bathroom";
+---
+
+<section class="fb-gal" id="gallery" data-gal aria-labelledby="fb-gal-title">
+  <div class="fb-gal__inner">
+    <header class="fb-gal__head">
+      <p class="fb-eyebrow fb-index">
+        <span class="fb-index__num">05</span>
+        <span class="fb-index__rule" aria-hidden="true"></span>
+        Explore the gallery
+      </p>
+      <h2 class="fb-gal__title" id="fb-gal-title">
+        <span class="fb-mask"><span data-gal-line>Rooms worth</span></span>
+        <span class="fb-mask"><span data-gal-line><em>borrowing from.</em></span></span>
+      </h2>
+      <p class="fb-gal__note">
+        Inspiration photographs from Unsplash, chosen for this concept.
+        They are not FORM projects. Select any image to look closer.
+      </p>
+    </header>
+
+    <ul class="fb-gal__grid" data-gal-grid>
+      {gallery.map((item, i) => (
+        <li class="fb-gal__cell">
+          <button
+            type="button"
+            class="fb-gal__card"
+            data-gal-card={i}
+            aria-haspopup="dialog"
+            aria-label={`Open inspiration photo ${i + 1} of ${gallery.length}: ${item.caption}`}
+          >
+            <span class="fb-gal__tilt" data-gal-tilt>
+              <img
+                src={item.thumb.src}
+                srcset={item.thumb.srcset}
+                sizes="(min-width: 900px) 24vw, 48vw"
+                alt=""
+                width={item.thumb.width}
+                height={item.thumb.height}
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="fb-gal__cap" aria-hidden="true">
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                {item.caption}
+              </span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <dialog class="fb-lb" data-lightbox aria-labelledby="fb-lb-caption">
+    <div class="fb-lb__inner">
+      <figure class="fb-lb__figure">
+        <div class="fb-lb__frame" data-lb-frame>
+          <img
+            class="fb-lb__img"
+            src={gallery[0].full.src}
+            srcset={gallery[0].full.srcset}
+            sizes="100vw"
+            alt={gallery[0].alt}
+            loading="lazy"
+            decoding="async"
+            data-lb-img
+          />
+        </div>
+        <figcaption class="fb-lb__caption" id="fb-lb-caption">
+          <span class="fb-lb__count" data-lb-count>1 / {gallery.length}</span>
+          <span class="fb-lb__title" data-lb-title>{gallery[0].caption}</span>
+          <span class="fb-lb__meta">
+            Inspiration photo, not a FORM project. Photo:
+            <a href={gallery[0].credit.href} rel="noopener" target="_blank" data-lb-credit>{gallery[0].credit.name} / Unsplash</a>
+          </span>
+        </figcaption>
+      </figure>
+      <div class="fb-lb__controls">
+        <button type="button" class="fb-lb__btn" data-lb-prev aria-label="Previous photo">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <button type="button" class="fb-lb__btn" data-lb-next aria-label="Next photo">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <button type="button" class="fb-lb__btn fb-lb__close" data-lb-close aria-label="Close gallery" autofocus>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-gal-data set:html={JSON.stringify(gallery)} />
+</section>
+
+<style>
+  .fb-gal {
+    position: relative;
+    z-index: 2;
+    background: var(--fb-ivory);
+    border-top: 1px solid var(--fb-line);
+    overflow: clip;
+  }
+
+  .fb-gal__inner {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: clamp(5rem, 14vh, 9rem) var(--fb-gutter) clamp(5rem, 14vh, 9rem);
+  }
+
+  .fb-gal__head {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    align-items: end;
+  }
+
+  .fb-gal__head > .fb-eyebrow {
+    grid-column: 1 / -1;
+  }
+
+  .fb-gal__title {
+    grid-column: 1 / span 7;
+    margin: 1.75rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2.8rem, 6vw, 6.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+
+  .fb-gal__note {
+    grid-column: 9 / span 4;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-gal__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    margin: clamp(3rem, 8vh, 5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Offset alternate columns for a less rigid rhythm. */
+  .fb-gal__cell:nth-child(4n + 2),
+  .fb-gal__cell:nth-child(4n + 4) {
+    translate: 0 clamp(1.5rem, 5vh, 3.5rem);
+  }
+
+  .fb-gal__card {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    perspective: 900px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fb-gal__card:focus-visible {
+    outline: none;
+  }
+
+  .fb-gal__card:focus-visible .fb-gal__tilt {
+    outline: 2px solid var(--fb-charcoal);
+    outline-offset: 4px;
+  }
+
+  .fb-gal__tilt {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--fb-stone);
+    box-shadow: 0 18px 40px -26px rgb(20 18 15 / 0.55);
+    transition: box-shadow 0.5s var(--fb-ease);
+  }
+
+  .fb-gal__card:hover .fb-gal__tilt {
+    box-shadow: 0 30px 60px -28px rgb(20 18 15 / 0.65);
+  }
+
+  .fb-gal__tilt img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 1s var(--fb-ease);
+  }
+
+  .fb-gal__card:hover .fb-gal__tilt img {
+    scale: 1.06;
+  }
+
+  .fb-gal__cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 2.5rem 0.9rem 0.8rem;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    text-align: left;
+    color: #fbf8f3;
+    background: linear-gradient(transparent, rgb(20 18 15 / 0.7));
+    opacity: 0;
+    translate: 0 8px;
+    transition:
+      opacity 0.4s ease,
+      translate 0.5s var(--fb-ease);
+  }
+
+  .fb-gal__cap span {
+    font-family: var(--fb-serif);
+    font-style: italic;
+  }
+
+  .fb-gal__card:hover .fb-gal__cap,
+  .fb-gal__card:focus-visible .fb-gal__cap {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* ---- Lightbox -------------------------------------------------- */
+
+  .fb-lb {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: #f4efe7;
+    background: rgb(20 18 15 / 0.96);
+  }
+
+  .fb-lb::backdrop {
+    background: rgb(20 18 15 / 0.6);
+  }
+
+  .fb-lb[open] {
+    animation: fb-lb-in 0.4s ease;
+  }
+
+  .fb-lb__inner {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+    padding: clamp(1rem, 3vw, 2.5rem);
+    gap: 1rem;
+  }
+
+  .fb-lb__figure {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 1rem;
+    min-height: 0;
+    margin: 0;
+  }
+
+  .fb-lb__frame {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    touch-action: pan-y;
+  }
+
+  .fb-lb__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .fb-lb__caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.25rem;
+    font-size: 0.85rem;
+    color: rgb(244 239 231 / 0.75);
+  }
+
+  .fb-lb__count {
+    font-family: var(--fb-serif);
+    font-style: italic;
+  }
+
+  .fb-lb__title {
+    font-family: var(--fb-serif);
+    font-size: 1.2rem;
+    color: #f4efe7;
+  }
+
+  .fb-lb__meta a {
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  .fb-lb__controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .fb-lb__btn {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    color: #f4efe7;
+    background: rgb(244 239 231 / 0.08);
+    border: 1px solid rgb(244 239 231 / 0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .fb-lb__btn:hover {
+    background: rgb(244 239 231 / 0.18);
+  }
+
+  .fb-lb__btn:focus-visible,
+  .fb-lb a:focus-visible {
+    outline: 2px solid #f4efe7;
+    outline-offset: 3px;
+  }
+
+  .fb-lb__btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .fb-lb__close {
+    margin-left: 1rem;
+  }
+
+  @keyframes fb-lb-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (max-width: 899px) {
+    .fb-gal__title,
+    .fb-gal__note {
+      grid-column: 1 / -1;
+    }
+
+    .fb-gal__note {
+      margin-top: 1.25rem;
+    }
+
+    .fb-gal__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fb-gal__cell:nth-child(4n + 2),
+    .fb-gal__cell:nth-child(4n + 4) {
+      translate: 0 1.5rem;
+    }
+
+    /* No hover on touch: keep captions visible. */
+    .fb-gal__cap {
+      opacity: 1;
+      translate: 0 0;
+      padding: 2rem 0.6rem 0.55rem;
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-gal__tilt,
+    .fb-gal__tilt img,
+    .fb-gal__cap,
+    .fb-lb__btn {
+      transition: none;
+    }
+
+    .fb-lb[open] {
+      animation: none;
+    }
+  }
+</style>

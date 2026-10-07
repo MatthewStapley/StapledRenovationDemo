@@ -1,0 +1,436 @@
+---
+// FORM Bathrooms hero. Motion lives in src/scripts/bathroom/hero.ts:
+// - Desktop: pins under the demo bar while the photo opens from its inset
+//   frame to full-bleed (panning from mirror to whole room) and the
+//   headline lifts out of frame.
+// - Mobile: no pin; the photo widens to the screen edges as it scrolls in.
+// - Fine pointers: a soft light follows the cursor; the photo gets a few
+//   pixels of depth.
+// - Reduced motion: static framed layout.
+//
+// Photo: Peter Muniz on Unsplash (Unsplash License). A real remodel by
+// others, so it's credited on the page and never presented as FORM's own
+// work. Full source and licence record: IMAGE-CREDITS.md. The same
+// responsive set is preloaded in the page <head> so it arrives first.
+import { heroCredit, heroImage } from "../../data/bathroom";
+
+const heroImageAlt =
+  "A bathroom in warm grey stone with a long stone vanity, walnut cabinet, arched mirror and a black pendant light";
+---
+
+<section class="fb-hero" data-hero aria-labelledby="fb-hero-title">
+  <header class="fb-header" data-hero-out>
+    <p class="fb-logo" data-hero-in>
+      <span class="fb-logo__word">FORM</span>
+      <span class="fb-logo__sub">Bathrooms</span>
+    </p>
+    <p class="fb-concept" data-hero-in>
+      <span class="fb-concept__dot" aria-hidden="true"></span>
+      Concept website
+    </p>
+  </header>
+
+  <div class="fb-hero__copy">
+    <p class="fb-eyebrow" data-hero-out>
+      <span data-hero-in>Bathroom design &amp; renovation</span>
+    </p>
+
+    <h1 class="fb-hero__title" id="fb-hero-title" data-hero-out>
+      <span class="fb-mask"><span data-hero-in>A better</span></span>
+      <span class="fb-mask"><span data-hero-in>beginning.</span></span>
+      <span class="fb-mask"><span data-hero-in><em>Every day.</em></span></span>
+    </h1>
+
+    <p class="fb-hero__sub" data-hero-out>
+      <span data-hero-in>Thoughtfully designed bathrooms. Beautifully finished.</span>
+    </p>
+
+    <div class="fb-hero__actions" data-hero-out>
+      <a href="#transformation" class="fb-btn fb-btn--solid" data-hero-in>
+        Explore the transformation
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4v12m0 0-5-5m5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>
+      <button type="button" class="fb-btn fb-btn--line" data-hero-in data-enquiry-open>
+        Discuss your project
+      </button>
+    </div>
+  </div>
+
+  <p class="fb-hero__note" data-hero-out>
+    <span data-hero-in>FORM Bathrooms is a fictional brand, designed by Stapled. as a website concept. Not a real business.</span>
+  </p>
+
+  <!-- Measured by the script: the photo's resting frame on desktop. -->
+  <div class="fb-hero__frame" data-hero-frame aria-hidden="true"></div>
+
+  <div class="fb-media" data-hero-media>
+    <div class="fb-media__depth" data-hero-depth>
+      <div class="fb-media__scale" data-hero-scale>
+        <img
+          class="fb-media__img"
+          src={heroImage.src}
+          srcset={heroImage.srcset}
+          sizes="100vw"
+          alt={heroImageAlt}
+          width={heroImage.width}
+          height={heroImage.height}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </div>
+    <div class="fb-media__light" data-hero-light aria-hidden="true"></div>
+    <div class="fb-media__scrim" data-hero-scrim aria-hidden="true"></div>
+    <div class="fb-media__veil" data-hero-veil aria-hidden="true"></div>
+    <p class="fb-media__credit">
+        Photo: <a href={heroCredit.href} rel="noopener" target="_blank">{heroCredit.name} / Unsplash</a>
+      </p>
+  </div>
+</section>
+
+<style>
+  .fb-hero {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    background: var(--fb-ivory);
+    /* Cursor light position, written by the script. */
+    --lx: 70%;
+    --ly: 40%;
+  }
+
+  .fb-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--fb-grain);
+    opacity: 0.32;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .fb-header {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(1.25rem, 3vh, 2rem) var(--fb-gutter) 0;
+  }
+
+  .fb-logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin: 0;
+  }
+
+  .fb-logo__word {
+    font-family: var(--fb-sans);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+  }
+
+  .fb-logo__sub {
+    font-family: var(--fb-serif);
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-concept {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fb-charcoal);
+    border: 1px solid var(--fb-line);
+    padding: 0.45rem 0.75rem;
+    background: rgb(244 239 231 / 0.7);
+  }
+
+  .fb-concept__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--fb-stone-dark);
+  }
+
+  .fb-hero__copy {
+    position: relative;
+    z-index: 3;
+  }
+
+  .fb-hero__title {
+    margin: 1.4rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    color: var(--fb-charcoal);
+  }
+
+  .fb-hero__sub {
+    margin: 1.75rem 0 0;
+    max-width: 24rem;
+    font-size: 1.08rem;
+    line-height: 1.55;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-hero__sub > span {
+    display: block;
+    text-wrap: balance;
+  }
+
+  .fb-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .fb-hero__note {
+    position: relative;
+    z-index: 3;
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-hero__note > span {
+    display: block;
+  }
+
+  /* Media stack: clip (frame) > depth (cursor) > scale (scroll) > image */
+  .fb-media {
+    overflow: hidden;
+    background: var(--fb-stone);
+  }
+
+  .fb-media__depth,
+  .fb-media__scale {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+
+  .fb-media__scale {
+    transform: scale(1.08);
+  }
+
+  .fb-media__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Keeps the mirror and basin centred in the tall mobile crop. */
+    object-position: 46% 50%;
+    /* Desktop pan: see --pan on .fb-hero. */
+    translate: var(--pan, 0%) 0;
+  }
+
+  /* Photographer credit. Small, but always legible on the photo. */
+  .fb-media__credit {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 4;
+    margin: 0;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+    color: rgb(244 239 231 / 0.92);
+    background: rgb(20 18 15 / 0.45);
+  }
+
+  .fb-media__credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgb(244 239 231 / 0.5);
+    text-underline-offset: 2px;
+  }
+
+  .fb-media__credit a:focus-visible {
+    outline-color: var(--fb-ivory);
+  }
+
+  /* Cursor-reactive light. Soft-light keeps it from washing out detail. */
+  .fb-media__light {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+    background:
+      radial-gradient(38% 48% at var(--lx) var(--ly), rgb(255 246 228 / 0.9), transparent 70%),
+      radial-gradient(90% 90% at var(--lx) var(--ly), transparent 40%, rgb(20 16 12 / 0.45) 100%);
+    transition: opacity 0.8s var(--fb-ease);
+  }
+
+  .fb-hero.is-lit .fb-media__light {
+    opacity: 1;
+  }
+
+  .fb-media__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgb(20 18 15 / 0) 30%, rgb(20 18 15 / 0.45) 100%);
+  }
+
+  .fb-media__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: var(--fb-ivory-deep);
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+    pointer-events: none;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Hero: desktop — copy left, photo framed right, pinned on scroll    */
+  /* ------------------------------------------------------------------ */
+
+  @media (min-width: 900px) {
+    .fb-hero {
+      height: calc(100svh - var(--demo-bar-height));
+      min-height: 40rem;
+      /* The photo's resting frame. Mirrored by .fb-hero__frame, which the
+         script measures, and used directly as the no-JS / reduced-motion
+         clip so all three agree. */
+      --frame-top: clamp(5.5rem, 13vh, 7.5rem);
+      --frame-right: var(--fb-gutter);
+      --frame-bottom: clamp(1.75rem, 5vh, 3rem);
+      --frame-left: 53%;
+      /* The resting frame looks onto the right of the full-bleed photo, so
+         the photo starts shifted right to put its mirror and pendant in the
+         frame, then pans back to centre as the frame opens. */
+      --pan: 27%;
+    }
+
+    .fb-hero__copy {
+      position: absolute;
+      left: var(--fb-gutter);
+      bottom: clamp(4.5rem, 11vh, 7rem);
+      width: calc(var(--frame-left) - var(--fb-gutter) - clamp(2rem, 4vw, 4rem));
+    }
+
+    .fb-hero__title {
+      font-size: clamp(3.5rem, 6.4vw, 7.25rem);
+    }
+
+    .fb-hero__note {
+      position: absolute;
+      left: var(--fb-gutter);
+      bottom: var(--frame-bottom);
+      max-width: 28rem;
+    }
+
+    .fb-hero__frame {
+      position: absolute;
+      top: var(--frame-top);
+      right: var(--frame-right);
+      bottom: var(--frame-bottom);
+      left: var(--frame-left);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .fb-media {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      clip-path: inset(var(--frame-top) var(--frame-right) var(--frame-bottom) var(--frame-left));
+    }
+
+
+    .fb-media__credit {
+      right: calc(var(--frame-right) + 1rem);
+      bottom: calc(var(--frame-bottom) + 1rem);
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Hero: mobile — stacked, photo in flow                              */
+  /* ------------------------------------------------------------------ */
+
+  @media (max-width: 899px) {
+    .fb-hero {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 2.5rem;
+    }
+
+    .fb-concept {
+      font-size: 0.62rem;
+      padding: 0.4rem 0.6rem;
+    }
+
+    .fb-hero__copy {
+      padding: clamp(2.75rem, 9vh, 4.5rem) var(--fb-gutter) 0;
+    }
+
+    .fb-hero__title {
+      font-size: clamp(3rem, 14.5vw, 5.5rem);
+    }
+
+    .fb-hero__sub {
+      font-size: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .fb-hero__actions {
+      flex-direction: column;
+      align-items: stretch;
+      margin-top: 1.75rem;
+    }
+
+    .fb-hero__frame {
+      display: none;
+    }
+
+    .fb-media {
+      position: relative;
+      order: 4;
+      margin-top: 2.5rem;
+      aspect-ratio: 4 / 5;
+      max-height: 78svh;
+      clip-path: inset(0 var(--fb-gutter));
+    }
+
+    .fb-media__credit {
+      right: calc(var(--fb-gutter) + 0.75rem);
+      bottom: 0.75rem;
+    }
+
+
+    .fb-hero__note {
+      order: 5;
+      padding: 1.25rem var(--fb-gutter) 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-media__scale {
+      transform: none;
+    }
+
+    .fb-media__light {
+      display: none;
+    }
+  }
+</style>

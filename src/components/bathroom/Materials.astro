@@ -1,0 +1,515 @@
+---
+// 02 Materials you can explore. Three sample "chips" act as a radio group
+// (click, tap, arrow keys, Home/End). Choosing one wipes in that style's
+// photograph, retints the section, swaps the copy and morphs the palette
+// swatches. Each style is a *different* room photographed by someone else,
+// and the page says so, rather than pretending to recolour one room.
+// Behaviour: src/scripts/bathroom/materials.ts.
+import { materialStyles } from "../../data/bathroom";
+
+const [first] = materialStyles;
+---
+
+<section
+  class="fb-mat"
+  id="materials"
+  data-mat
+  aria-labelledby="fb-mat-title"
+  style={`--mat-tint: ${first.tint}`}
+>
+  <div class="fb-mat__inner">
+    <header class="fb-mat__head">
+      <p class="fb-eyebrow fb-index" data-mat-reveal>
+        <span class="fb-index__num">02</span>
+        <span class="fb-index__rule" aria-hidden="true"></span>
+        Materials you can explore
+      </p>
+      <h2 class="fb-mat__title" id="fb-mat-title">
+        <span class="fb-mask"><span data-mat-line>Begin with</span></span>
+        <span class="fb-mask"><span data-mat-line><em>a feeling.</em></span></span>
+      </h2>
+    </header>
+
+    <div class="fb-mat__samples">
+      <p class="fb-mat__hint" id="fb-mat-hint" data-mat-reveal>Choose a sample</p>
+      <div class="fb-mat__chips" role="radiogroup" aria-labelledby="fb-mat-hint" data-mat-group>
+        {materialStyles.map((style, i) => (
+          <button
+            type="button"
+            role="radio"
+            class="fb-chip"
+            aria-checked={i === 0 ? "true" : "false"}
+            tabindex={i === 0 ? 0 : -1}
+            data-mat-chip={style.id}
+          >
+            <span class="fb-chip__body" data-chip-body>
+              <span class="fb-chip__swatch">
+                <img
+                  src={style.sample.src}
+                  srcset={style.sample.srcset}
+                  sizes="(min-width: 900px) 15vw, 30vw"
+                  alt=""
+                  width={style.sample.width}
+                  height={style.sample.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="fb-chip__sheen" aria-hidden="true"></span>
+              </span>
+              <span class="fb-chip__label">
+                <span class="fb-chip__no">No. 0{i + 1}</span>
+                <span class="fb-chip__name">{style.name}</span>
+                <span class="fb-chip__finish">{style.sampleLabel}</span>
+              </span>
+              <span class="fb-chip__check" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none"><path d="m4 8.5 2.5 2.5L12 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="fb-mat__copy" data-mat-reveal>
+      <div class="fb-mat__texts">
+        {materialStyles.map((style, i) => (
+          <div class="fb-mat__text" data-mat-text={style.id} aria-hidden={i === 0 ? undefined : "true"} hidden={i !== 0}>
+            <h3 class="fb-mat__name"><span>{style.name}</span></h3>
+            <p class="fb-mat__tagline"><span>{style.tagline}</span></p>
+            <p class="fb-mat__desc"><span>{style.description}</span></p>
+          </div>
+        ))}
+      </div>
+
+      <ul class="fb-mat__palette" aria-label="Palette sampled from the photograph">
+        {first.palette.map((swatch, i) => (
+          <li class="fb-swatch" data-mat-swatch={i}>
+            <span class="fb-swatch__chip" style={`background:${swatch.hex}`} data-swatch-chip></span>
+            <span class="fb-swatch__name" data-swatch-name>{swatch.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <figure class="fb-mat__figure" data-mat-figure>
+      <div class="fb-mat__frame" data-mat-frame>
+        {materialStyles.map((style, i) => (
+          <img
+            class="fb-mat__img"
+            src={style.image.src}
+            srcset={style.image.srcset}
+            sizes="(min-width: 900px) 46vw, 100vw"
+            alt={style.alt}
+            width={style.image.width}
+            height={style.image.height}
+            loading="lazy"
+            decoding="async"
+            data-mat-img={style.id}
+            aria-hidden={i === 0 ? undefined : "true"}
+            style={i === 0 ? "z-index:2" : "z-index:0;visibility:hidden"}
+          />
+        ))}
+      </div>
+      <figcaption class="fb-mat__caption">
+        <span>Each style is shown in a different room: inspiration photographs, not FORM projects.</span>
+        {materialStyles.map((style, i) => (
+          <span class="fb-mat__credit" data-mat-credit={style.id} hidden={i !== 0}>
+            Photo: <a href={style.credit.href} rel="noopener" target="_blank">{style.credit.name} / Unsplash</a>
+          </span>
+        ))}
+      </figcaption>
+    </figure>
+
+    <p class="fb-sr" aria-live="polite" data-mat-live></p>
+  </div>
+
+  <script type="application/json" data-mat-data set:html={JSON.stringify(materialStyles)} />
+</section>
+
+<style>
+  .fb-mat {
+    position: relative;
+    z-index: 2;
+    background: var(--mat-tint, var(--fb-ivory));
+  }
+
+  .fb-mat::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--fb-grain);
+    opacity: 0.3;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .fb-mat__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "head    head    head    head    head    head    fig fig fig fig fig fig"
+      "samples samples samples samples samples samples fig fig fig fig fig fig"
+      "copy    copy    copy    copy    copy    .       fig fig fig fig fig fig";
+    grid-template-rows: auto auto 1fr;
+    column-gap: clamp(1rem, 2vw, 2rem);
+    padding: clamp(5rem, 14vh, 9rem) var(--fb-gutter);
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .fb-mat__head {
+    grid-area: head;
+  }
+
+  .fb-mat__title {
+    margin: 1.75rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2.8rem, 6vw, 6.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+
+  /* ---- Sample chips ---------------------------------------------- */
+
+  .fb-mat__samples {
+    grid-area: samples;
+    margin-top: clamp(2.5rem, 6vh, 4rem);
+  }
+
+  .fb-mat__hint {
+    margin: 0 0 1rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-mat__chips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.6vw, 1.5rem);
+    perspective: 900px;
+  }
+
+  .fb-chip {
+    position: relative;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fb-chip__body {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.5rem 0;
+    background: #fbf8f3;
+    border-radius: 3px;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.9) inset,
+      0 1px 2px rgb(31 29 26 / 0.12),
+      0 10px 22px -12px rgb(31 29 26 / 0.35);
+    transform-style: preserve-3d;
+    /* Lift uses top (not translate/transform): GSAP owns this element's
+       transform for the cursor tilt. */
+    top: 0;
+    transition:
+      box-shadow 0.45s var(--fb-ease),
+      top 0.45s var(--fb-ease);
+    --sx: 50%;
+    --sy: 30%;
+  }
+
+  .fb-chip:hover .fb-chip__body {
+    top: -6px;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.9) inset,
+      0 2px 4px rgb(31 29 26 / 0.12),
+      0 24px 34px -16px rgb(31 29 26 / 0.45);
+  }
+
+  .fb-chip[aria-checked="true"] .fb-chip__body {
+    top: -10px;
+    box-shadow:
+      0 0 0 1.5px var(--fb-charcoal),
+      0 2px 4px rgb(31 29 26 / 0.14),
+      0 30px 40px -18px rgb(31 29 26 / 0.5);
+  }
+
+  .fb-chip:focus-visible {
+    outline: none;
+  }
+
+  .fb-chip:focus-visible .fb-chip__body {
+    outline: 2px solid var(--fb-charcoal);
+    outline-offset: 5px;
+  }
+
+  .fb-chip__swatch {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 4.4;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--fb-stone);
+  }
+
+  .fb-chip__swatch img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.9s var(--fb-ease);
+  }
+
+  .fb-chip:hover .fb-chip__swatch img {
+    scale: 1.06;
+  }
+
+  /* Specular sheen that tracks the pointer across the sample. */
+  .fb-chip__sheen {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 50% at var(--sx) var(--sy), rgb(255 255 255 / 0.35), transparent 70%);
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .fb-chip:hover .fb-chip__sheen {
+    opacity: 1;
+  }
+
+  .fb-chip__label {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.7rem 0.25rem 0.8rem;
+  }
+
+  .fb-chip__no {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-chip__name {
+    font-family: var(--fb-serif);
+    font-size: clamp(1rem, 1.35vw, 1.25rem);
+    line-height: 1.15;
+    color: var(--fb-charcoal);
+  }
+
+  .fb-chip__finish {
+    font-size: 0.75rem;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-chip__check {
+    position: absolute;
+    top: 0.95rem;
+    right: 0.95rem;
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    color: var(--fb-ivory);
+    background: var(--fb-charcoal);
+    transform: translateZ(20px) scale(0.4);
+    opacity: 0;
+    transition:
+      opacity 0.3s ease,
+      transform 0.45s var(--fb-ease);
+  }
+
+  .fb-chip__check svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .fb-chip[aria-checked="true"] .fb-chip__check {
+    opacity: 1;
+    transform: translateZ(20px) scale(1);
+  }
+
+  /* ---- Copy and palette ------------------------------------------ */
+
+  .fb-mat__copy {
+    grid-area: copy;
+    margin-top: clamp(2.5rem, 6vh, 3.5rem);
+  }
+
+  .fb-mat__texts {
+    display: grid;
+  }
+
+  .fb-mat__text {
+    grid-area: 1 / 1;
+  }
+
+  .fb-mat__text > * > span {
+    display: block;
+  }
+
+  .fb-mat__text > * {
+    overflow: clip;
+  }
+
+  .fb-mat__name {
+    margin: 0;
+    font-family: var(--fb-serif);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .fb-mat__tagline {
+    margin: 0.35rem 0 0;
+    font-family: var(--fb-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-mat__desc {
+    margin: 1rem 0 0;
+    max-width: 30rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-mat__palette {
+    display: flex;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fb-swatch {
+    display: grid;
+    gap: 0.45rem;
+    justify-items: start;
+  }
+
+  .fb-swatch__chip {
+    width: clamp(2.6rem, 4vw, 3.4rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 1px rgb(31 29 26 / 0.12),
+      0 6px 14px -8px rgb(31 29 26 / 0.5);
+  }
+
+  .fb-swatch__name {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--fb-ink-soft);
+  }
+
+  /* ---- Featured photograph --------------------------------------- */
+
+  .fb-mat__figure {
+    grid-area: fig;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--demo-bar-height) + 2rem);
+    margin: 0;
+  }
+
+  .fb-mat__frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-height: calc(100svh - var(--demo-bar-height) - 7rem);
+    margin-left: auto;
+    overflow: hidden;
+    background: var(--fb-stone);
+  }
+
+  .fb-mat__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fb-mat__caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    margin-top: 0.85rem;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-mat__credit a {
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 899px) {
+    .fb-mat__inner {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "head"
+        "fig"
+        "samples"
+        "copy";
+      padding-block: clamp(4rem, 12vh, 6rem);
+    }
+
+    .fb-mat__figure {
+      position: relative;
+      top: 0;
+      margin-top: 2rem;
+    }
+
+    /* Shorter on phones so the photo and the samples share the screen
+       and every tap visibly changes the room. */
+    .fb-mat__frame {
+      aspect-ratio: 4 / 3;
+      max-height: none;
+      margin: 0 auto;
+    }
+
+    .fb-mat__samples {
+      margin-top: 2rem;
+    }
+
+    .fb-chip__label {
+      padding-inline: 0.1rem;
+    }
+
+    .fb-chip__finish {
+      display: none;
+    }
+
+    .fb-chip__check {
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 1.35rem;
+      height: 1.35rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-chip__body,
+    .fb-chip__swatch img,
+    .fb-chip__check,
+    .fb-chip__sheen {
+      transition: none;
+    }
+  }
+</style>

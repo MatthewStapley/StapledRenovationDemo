@@ -1,0 +1,182 @@
+/* ---------------------------------------------------------------------------
+   FORM BATHROOMS — shared brand system for the /bathroom/ demo.
+   Tokens, type primitives, buttons. Section layouts live in their components.
+--------------------------------------------------------------------------- */
+
+html:has(.fb) {
+  --demo-bar-height: 3rem;
+  background: #f4efe7;
+  scroll-padding-top: calc(var(--demo-bar-height) + 1rem);
+}
+
+/* Hero intro elements stay hidden only while the intro is about to run. */
+html.fb-js:not(.fb-ready) [data-hero-in] {
+  opacity: 0;
+}
+
+.fb {
+  --fb-ivory: #f4efe7;
+  --fb-ivory-deep: #ebe4d8;
+  --fb-stone: #cfc5b6;
+  --fb-stone-dark: #a89c8a;
+  --fb-charcoal: #1f1d1a;
+  --fb-ink-soft: #5b554d;
+  --fb-line: rgb(31 29 26 / 0.16);
+  --fb-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --fb-sans: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+  --fb-gutter: clamp(1.25rem, 3.6vw, 3.5rem);
+  --fb-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Fine stone grain, layered over the ivory surfaces. */
+  --fb-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.13 0 0 0 0 0.1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  font-family: var(--fb-sans);
+  color: var(--fb-charcoal);
+  background: var(--fb-ivory);
+}
+
+.fb em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.fb-mask {
+  display: block;
+  overflow: hidden;
+  /* Room for descenders and the italic overhang inside the mask. */
+  padding: 0 0.08em 0.08em 0;
+  margin-bottom: -0.08em;
+}
+
+.fb-mask > span {
+  display: block;
+}
+
+.fb-eyebrow {
+  margin: 0;
+  font-family: var(--fb-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fb-ink-soft);
+}
+
+.fb-eyebrow > span {
+  display: inline-block;
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                            */
+/* ------------------------------------------------------------------ */
+
+.fb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 3.25rem;
+  padding: 0 1.6rem;
+  font-family: var(--fb-sans);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.35s var(--fb-ease),
+    color 0.35s var(--fb-ease),
+    border-color 0.35s var(--fb-ease);
+}
+
+.fb-btn svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  transition: transform 0.45s var(--fb-ease);
+}
+
+.fb-btn--solid {
+  color: var(--fb-ivory);
+  background: var(--fb-charcoal);
+  border: 1px solid var(--fb-charcoal);
+}
+
+.fb-btn--solid:hover {
+  background: #34312c;
+}
+
+.fb-btn--solid:hover svg {
+  transform: translateY(3px);
+}
+
+.fb-btn--line {
+  color: var(--fb-charcoal);
+  background: transparent;
+  border: 1px solid rgb(31 29 26 / 0.4);
+}
+
+.fb-btn--line:hover {
+  border-color: var(--fb-charcoal);
+  background: rgb(31 29 26 / 0.04);
+}
+
+.fb-btn:active {
+  transform: translateY(1px);
+}
+
+.fb a:focus-visible,
+.fb button:focus-visible {
+  outline: 2px solid var(--fb-charcoal);
+  outline-offset: 3px;
+}
+
+/* Section index: "02  Materials" style label used across chapters. */
+.fb-index {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.fb-index__num {
+  font-family: var(--fb-serif);
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fb-charcoal);
+}
+
+.fb-index__rule {
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* Grain overlay for any surface that wants the stone texture. */
+.fb-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fb-grain);
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.fb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fb-btn,
+  .fb-btn svg {
+    transition: none;
+  }
+}

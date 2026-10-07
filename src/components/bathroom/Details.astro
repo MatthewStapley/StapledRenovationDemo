@@ -1,0 +1,274 @@
+---
+// 04 The finishing details. Asymmetric close-ups: each image's mask opens
+// from a different direction (bottom, left, centre) while its text card
+// slides into place over the edge. Images drift at different scroll speeds
+// and lean away from the cursor on desktop for a sense of depth.
+// Behaviour: src/scripts/bathroom/details.ts.
+import { details } from "../../data/bathroom";
+
+const directions = ["up", "right", "centre"];
+// Rendered widths (plus the 8% drift overscan) for each slot.
+const sizes = [
+  "(min-width: 900px) 42vw, 92vw",
+  "(min-width: 900px) 52vw, 92vw",
+  "(min-width: 900px) 36vw, 92vw",
+];
+---
+
+<section class="fb-det fb-grain" id="details" data-det aria-labelledby="fb-det-title">
+  <div class="fb-det__inner">
+    <header class="fb-det__head">
+      <p class="fb-eyebrow fb-index" data-det-fade>
+        <span class="fb-index__num">04</span>
+        <span class="fb-index__rule" aria-hidden="true"></span>
+        The finishing details
+      </p>
+      <h2 class="fb-det__title" id="fb-det-title">
+        <span class="fb-mask"><span data-det-line>Small things,</span></span>
+        <span class="fb-mask"><span data-det-line><em>done properly.</em></span></span>
+      </h2>
+      <p class="fb-det__lede" data-det-fade>
+        The difference between a nice bathroom and one you love is mostly
+        in the last ten per cent: how a tap feels, how stone meets light,
+        how little there is to clean around.
+      </p>
+    </header>
+
+    {details.map((d, i) => (
+      <article class={`fb-det__item fb-det__item--${i + 1}`} data-det-item data-dir={directions[i]}>
+        <div class="fb-det__media" data-det-mask>
+          <div class="fb-det__drift" data-det-drift data-depth={[0.6, 1, 0.8][i]}>
+            <img
+              src={d.image.src}
+              srcset={d.image.srcset}
+              sizes={sizes[i]}
+              alt={d.alt}
+              width={d.image.width}
+              height={d.image.height}
+              loading="lazy"
+              decoding="async"
+              data-det-img
+            />
+          </div>
+        </div>
+        <div class="fb-det__card" data-det-card>
+          <p class="fb-det__no">{["i", "ii", "iii"][i]}.</p>
+          <h3 class="fb-det__name">{d.title}</h3>
+          <p class="fb-det__body">{d.body}</p>
+          <p class="fb-det__credit">
+            Inspiration photo:
+            <a href={d.credit.href} rel="noopener" target="_blank">{d.credit.name} / Unsplash</a>
+          </p>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .fb-det {
+    position: relative;
+    z-index: 2;
+    background: var(--fb-ivory-deep);
+    border-top: 1px solid var(--fb-line);
+    overflow: clip;
+  }
+
+  .fb-det__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    row-gap: clamp(3rem, 8vh, 6rem);
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: clamp(5rem, 14vh, 9rem) var(--fb-gutter) clamp(6rem, 18vh, 11rem);
+  }
+
+  .fb-det__head {
+    grid-column: 1 / span 6;
+  }
+
+  .fb-det__title {
+    margin: 1.75rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2.8rem, 6vw, 6.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+
+  .fb-det__lede {
+    max-width: 28rem;
+    margin: 1.75rem 0 0;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-det__item {
+    position: relative;
+    margin: 0;
+  }
+
+  /* Asymmetric placement: tall left, wide right (dropped), square centre. */
+  .fb-det__item--1 {
+    grid-column: 1 / span 5;
+    grid-row: 2 / span 2;
+  }
+
+  .fb-det__item--2 {
+    grid-column: 7 / span 6;
+    grid-row: 1 / span 2;
+    align-self: end;
+  }
+
+  .fb-det__item--3 {
+    grid-column: 7 / span 4;
+    grid-row: 3;
+    margin-top: clamp(1rem, 6vh, 4rem);
+  }
+
+  .fb-det__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--fb-stone);
+  }
+
+  .fb-det__item--1 .fb-det__media {
+    aspect-ratio: 11 / 14;
+  }
+
+  .fb-det__item--2 .fb-det__media {
+    aspect-ratio: 3 / 2;
+  }
+
+  .fb-det__item--3 .fb-det__media {
+    aspect-ratio: 1;
+  }
+
+  .fb-det__drift {
+    position: absolute;
+    inset: -8% -4%;
+  }
+
+  .fb-det__drift img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Text cards overlap the image edges, each on a different side. */
+  .fb-det__card {
+    position: relative;
+    z-index: 2;
+    width: min(21rem, 86%);
+    padding: clamp(1.25rem, 2vw, 1.75rem);
+    background: var(--fb-ivory);
+    box-shadow:
+      0 0 0 1px var(--fb-line),
+      0 24px 50px -28px rgb(20 18 15 / 0.45);
+  }
+
+  .fb-det__item--1 .fb-det__card {
+    margin: -5rem -3.5rem 0 auto;
+  }
+
+  .fb-det__item--2 .fb-det__card {
+    position: absolute;
+    top: -3.5rem;
+    left: -3rem;
+  }
+
+  .fb-det__item--3 .fb-det__card {
+    position: absolute;
+    left: calc(100% - 3rem);
+    bottom: 2.5rem;
+    width: min(18rem, 30vw);
+  }
+
+  .fb-det__no {
+    margin: 0;
+    font-family: var(--fb-serif);
+    font-style: italic;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-det__name {
+    margin: 0.35rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .fb-det__body {
+    margin: 0.7rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-det__credit {
+    margin: 1rem 0 0;
+    font-size: 0.68rem;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-det__credit a {
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 1099px) and (min-width: 900px) {
+    .fb-det__item--3 .fb-det__card {
+      left: auto;
+      right: -2rem;
+      bottom: -3rem;
+    }
+  }
+
+  /* ---- Mobile: single column, cards tuck under alternating edges -- */
+
+  @media (max-width: 899px) {
+    .fb-det__inner {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 4.5rem;
+    }
+
+    .fb-det__head,
+    .fb-det__item--1,
+    .fb-det__item--2,
+    .fb-det__item--3 {
+      grid-column: 1;
+      grid-row: auto;
+      margin-top: 0;
+    }
+
+    .fb-det__item--2 .fb-det__media,
+    .fb-det__item--3 .fb-det__media {
+      width: 88%;
+      margin-left: auto;
+    }
+
+    .fb-det__item--1 .fb-det__media {
+      width: 88%;
+    }
+
+    .fb-det__item .fb-det__card,
+    .fb-det__item--2 .fb-det__card,
+    .fb-det__item--3 .fb-det__card {
+      position: relative;
+      inset: auto;
+      width: 86%;
+      margin: -3rem 0 0 auto;
+    }
+
+    .fb-det__item--2 .fb-det__card,
+    .fb-det__item--3 .fb-det__card {
+      margin: -3rem auto 0 0;
+    }
+  }
+</style>

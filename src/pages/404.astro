@@ -1,0 +1,52 @@
+---
+// GitHub Pages serves this for any unknown path on the site.
+import Layout from "../layouts/Layout.astro";
+import { asset } from "../data/assets";
+import { stapledUrl } from "../data/demos";
+---
+
+<Layout title="Page not found | Stapled. renovation demo" description="This page doesn't exist in the Stapled. renovation demo.">
+  <main id="main" class="nf">
+    <p class="nf__eyebrow">Stapled. renovation demo</p>
+    <h1>That page isn't here.</h1>
+    <p>The demo currently has one room.</p>
+    <p class="nf__links">
+      <a href={asset("/bathroom/")}>View the bathroom demo</a>
+      <a href={stapledUrl}>Visit stapled.co.uk</a>
+    </p>
+  </main>
+</Layout>
+
+<style>
+  .nf {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    min-height: 100svh;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem;
+  }
+
+  .nf__eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #5b554d;
+  }
+
+  h1 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    line-height: 1;
+  }
+
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+</style>

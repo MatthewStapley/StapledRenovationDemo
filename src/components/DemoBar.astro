@@ -1,0 +1,339 @@
+---
+// Persistent "Stapled demo" bar for every room. Always visible and never
+// dismissible, so a demo can't be mistaken for a real business, and doubles
+// as the room switcher. Both Stapled links leave for the live site.
+// Rooms that aren't built yet render as disabled items, not links.
+//
+// Desktop: rooms sit inline. Below 760px they collapse behind a single
+// "Bathroom" toggle that opens a small panel, keeping the bar one row high.
+import { renovationDemos, stapledUrl } from "../data/demos";
+
+interface Props {
+  current: string;
+}
+
+const { current } = Astro.props;
+const currentRoom = renovationDemos.find((room) => room.slug === current);
+---
+
+<div class="demo-bar" data-demo-bar>
+  <div class="demo-bar__inner">
+    <a href={stapledUrl} class="demo-bar__brand" aria-label="Stapled. website">
+      Stapled.<span class="demo-bar__brand-tag">Demo</span>
+    </a>
+
+    <nav class="demo-bar__rooms" aria-label="Demo rooms">
+      <button
+        type="button"
+        class="demo-bar__toggle"
+        aria-expanded="false"
+        aria-controls="demo-bar-list"
+        data-demo-toggle
+      >
+        <span class="demo-bar__toggle-label">{currentRoom?.label}</span>
+        <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <span class="visually-hidden">Choose a demo room</span>
+      </button>
+
+      <ul class="demo-bar__list" id="demo-bar-list" data-demo-list>
+        {renovationDemos.map((room) => (
+          <li>
+            {room.available && room.href ? (
+              <a
+                href={room.href}
+                class="demo-bar__room"
+                aria-current={room.slug === current ? "page" : undefined}
+              >
+                {room.label}
+              </a>
+            ) : (
+              <span class="demo-bar__room demo-bar__room--soon" aria-disabled="true">
+                {room.label}
+                <span class="demo-bar__soon">Coming soon</span>
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href={stapledUrl} class="demo-bar__back">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      <span>Back to Stapled</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .demo-bar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    height: var(--demo-bar-height, 3rem);
+    background: #111111;
+    color: #f5f3ee;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    font-size: 0.78rem;
+  }
+
+  .demo-bar__inner {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 clamp(1rem, 3vw, 2rem);
+  }
+
+  .demo-bar__brand {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    color: #f5f3ee;
+    text-decoration: none;
+  }
+
+  .demo-bar__brand-tag {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(245 243 238 / 0.7);
+    border: 1px solid rgb(245 243 238 / 0.28);
+    border-radius: 999px;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .demo-bar__rooms {
+    position: relative;
+  }
+
+  .demo-bar__toggle {
+    display: none;
+  }
+
+  .demo-bar__list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .demo-bar__room {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2rem;
+    padding: 0 0.8rem;
+    border-radius: 999px;
+    color: rgb(245 243 238 / 0.85);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a.demo-bar__room:hover {
+    color: #f5f3ee;
+    background: rgb(245 243 238 / 0.08);
+  }
+
+  .demo-bar__room[aria-current="page"] {
+    background: #f5f3ee;
+    color: #111111;
+    font-weight: 600;
+  }
+
+  .demo-bar__room--soon {
+    color: rgb(245 243 238 / 0.5);
+    cursor: default;
+  }
+
+  .demo-bar__soon {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(245 243 238 / 0.62);
+    border: 1px dashed rgb(245 243 238 / 0.3);
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+  }
+
+  .demo-bar__back {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    color: #f5f3ee;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgb(245 243 238 / 0.4);
+    padding-bottom: 0.1em;
+    white-space: nowrap;
+  }
+
+  .demo-bar__back:hover {
+    border-color: #f5f3ee;
+  }
+
+  .demo-bar__back svg {
+    width: 0.95em;
+    height: 0.95em;
+  }
+
+  .demo-bar a:focus-visible,
+  .demo-bar button:focus-visible {
+    outline: 2px solid #f5f3ee;
+    outline-offset: 3px;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Compact bar: rooms collapse behind a toggle. */
+  @media (max-width: 759px) {
+    .demo-bar__inner {
+      grid-template-columns: auto 1fr auto;
+      gap: 0.75rem;
+    }
+
+    .demo-bar__rooms {
+      justify-self: center;
+    }
+
+    .demo-bar__toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-height: 2.25rem;
+      padding: 0 0.8rem;
+      font: inherit;
+      font-weight: 600;
+      color: #111111;
+      background: #f5f3ee;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .demo-bar__toggle svg {
+      width: 0.75rem;
+      height: 0.75rem;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .demo-bar__toggle[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    .demo-bar__list {
+      position: absolute;
+      top: calc(100% + 0.6rem);
+      left: 50%;
+      min-width: 13.5rem;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.15rem;
+      padding: 0.4rem;
+      background: #1c1c1c;
+      border: 1px solid rgb(245 243 238 / 0.12);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, -6px);
+      transform-origin: top center;
+      transition:
+        opacity 0.2s ease,
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear 0.25s;
+    }
+
+    .demo-bar__list.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+      transition:
+        opacity 0.2s ease,
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .demo-bar__room {
+      justify-content: space-between;
+      min-height: 2.6rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+    }
+
+    .demo-bar__back span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .demo-bar__back {
+      border-bottom: 0;
+      min-width: 2.25rem;
+      min-height: 2.25rem;
+      justify-content: center;
+    }
+
+    .demo-bar__back svg {
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-bar__list,
+    .demo-bar__list.is-open,
+    .demo-bar__toggle svg {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>("[data-demo-bar]");
+  const toggle = bar?.querySelector<HTMLButtonElement>("[data-demo-toggle]");
+  const list = bar?.querySelector<HTMLElement>("[data-demo-list]");
+
+  if (bar && toggle && list) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      list.classList.toggle("is-open", open);
+    };
+
+    toggle.addEventListener("click", () => {
+      setOpen(toggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!bar.contains(event.target as Node)) setOpen(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,526 @@
+---
+// 03 The transformation. A sticky, scroll-scrubbed scene: a floor plan
+// draws in, folds away into an elevation traced from the finished photo,
+// then the photo wipes in behind a scanning line and the drawing fades.
+// Short annotations appear at each stage and a step list tracks progress.
+//
+// Honesty: there is no matching "before" photo of this room, so there is
+// no before/after comparison. Both drawings are illustrative, traced from
+// an inspiration image by someone else, and the stage says so.
+// Behaviour: src/scripts/bathroom/transformation.ts.
+import { transformation } from "../../data/bathroom";
+
+const steps = [
+  { no: "01", title: "Measure", body: "The room as it is: walls, services, light and the way you move through it." },
+  { no: "02", title: "Plan", body: "Layout fixed on paper first, so every fitting has a reason to be where it is." },
+  { no: "03", title: "Specify", body: "Surfaces, fittings and lighting chosen together, never one at a time." },
+  { no: "04", title: "Finish", body: "The room you imagined, built to the drawing." },
+];
+
+// Callouts sit at percentages of the 4:3 stage; `at` is the timeline step.
+const callouts = [
+  { at: 0, x: 26, y: 33, text: "Wet zone planned first" },
+  { at: 0, x: 72, y: 20, text: "Vanity on the longest wall" },
+  { at: 1, x: 43, y: 21, text: "Lit niche at shelf height" },
+  { at: 1, x: 47, y: 77, text: "Wall-hung WC frees the floor" },
+  { at: 2, x: 75, y: 30, text: "Backlit mirror for soft task light" },
+  { at: 3, x: 80, y: 74, text: "Fluted, floating vanity" },
+];
+
+const line = 'fill="none" stroke="currentColor" pathLength="1"';
+---
+
+<section class="fb-tf" id="transformation" data-tf aria-labelledby="fb-tf-title">
+  <div class="fb-tf__stage-wrap" data-tf-sticky>
+    <div class="fb-tf__intro">
+      <p class="fb-eyebrow fb-index">
+        <span class="fb-index__num">03</span>
+        <span class="fb-index__rule" aria-hidden="true"></span>
+        The transformation
+      </p>
+      <h2 class="fb-tf__title" id="fb-tf-title">
+        <span class="fb-mask"><span data-tf-line>From what you have.</span></span>
+        <span class="fb-mask"><span data-tf-line><em>To what you imagined.</em></span></span>
+      </h2>
+
+      <ol class="fb-tf__steps" data-tf-steps>
+        {steps.map((step, i) => (
+          <li class="fb-tf__step" data-tf-step={i} aria-current={i === 0 ? "step" : undefined}>
+            <span class="fb-tf__step-no">{step.no}</span>
+            <span class="fb-tf__step-text">
+              <strong>{step.title}</strong>
+              <span>{step.body}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <div class="fb-tf__progress" aria-hidden="true"><span data-tf-progress></span></div>
+    </div>
+
+    <figure class="fb-tf__figure">
+      <div class="fb-tf__stage" data-tf-stage>
+        <div class="fb-tf__paper" aria-hidden="true" data-tf-paper></div>
+
+        <!-- Photo: clipped in from left to right behind the scan line. -->
+        <div class="fb-tf__photo" data-tf-photo>
+          <img
+            src={transformation.image.src}
+            srcset={transformation.image.srcset}
+            sizes="(min-width: 900px) 62vw, 100vw"
+            alt={transformation.alt}
+            width={transformation.image.width}
+            height={transformation.image.height}
+            loading="lazy"
+            decoding="async"
+            data-tf-img
+          />
+        </div>
+        <span class="fb-tf__scan" aria-hidden="true" data-tf-scan></span>
+
+        <!-- 1. Floor plan (top-down), illustrative. -->
+        <svg class="fb-tf__svg fb-tf__plan" viewBox="0 0 1200 900" aria-hidden="true" data-tf-plan>
+          <g set:html={`
+            <rect x="150" y="120" width="900" height="660" ${line} stroke-width="3" data-draw />
+            <rect x="168" y="138" width="864" height="624" ${line} stroke-width="1.5" data-draw />
+            <path d="M168 420 H470 V138" ${line} stroke-width="1.5" data-draw />
+            <path d="M470 300 V420" ${line} stroke-width="3" data-draw />
+            <path d="M190 160 L450 400 M230 160 L450 360 M270 160 L450 320 M310 160 L450 280 M350 160 L450 240 M390 160 L450 200 M190 200 L410 400 M190 240 L370 400 M190 280 L330 400 M190 320 L290 400 M190 360 L250 400" ${line} stroke-width="0.75" opacity="0.45" data-draw />
+            <circle cx="320" cy="280" r="10" ${line} stroke-width="1.5" data-draw />
+            <rect x="535" y="138" width="80" height="34" ${line} stroke-width="1.5" data-draw />
+            <path d="M545 172 C545 250 605 250 605 172" ${line} stroke-width="1.5" data-draw />
+            <rect x="700" y="138" width="332" height="110" ${line} stroke-width="1.5" data-draw />
+            <ellipse cx="866" cy="190" rx="62" ry="32" ${line} stroke-width="1.5" data-draw />
+            <path d="M760 762 V640 A122 122 0 0 1 882 762" ${line} stroke-width="1.5" data-draw />
+            <path d="M150 80 H1050 M150 70 V90 M1050 70 V90" ${line} stroke-width="1" data-draw />
+            <path d="M105 120 V780 M95 120 H115 M95 780 H115" ${line} stroke-width="1" data-draw />
+          `} />
+          <g class="fb-tf__plan-labels" data-tf-labels>
+            <text x="600" y="66" text-anchor="middle">3000</text>
+            <text x="88" y="455" text-anchor="middle" transform="rotate(-90 88 455)">2200</text>
+            <text x="318" y="458" text-anchor="middle">SHOWER</text>
+            <text x="575" y="290" text-anchor="middle">WC</text>
+            <text x="866" y="290" text-anchor="middle">VANITY</text>
+            <text x="820" y="620" text-anchor="middle">DOOR</text>
+          </g>
+        </svg>
+
+        <!-- 2. Elevation, traced from the finished photograph. -->
+        <svg class="fb-tf__svg fb-tf__elev" viewBox="0 0 1200 900" aria-hidden="true" data-tf-elev>
+          <g set:html={`
+            <path d="M0 808 H1200" ${line} stroke-width="1.5" data-draw />
+            <rect x="6" y="0" width="354" height="808" ${line} stroke-width="1.5" data-draw />
+            <path d="M660 0 V566" ${line} stroke-width="1" opacity="0.6" data-draw />
+            <path d="M135 48 H195 L207 102 H147 Z" ${line} stroke-width="1.2" data-draw />
+            <path d="M170 380 V590 M163 380 H185 V400 H163 Z" ${line} stroke-width="1.2" data-draw />
+            <path d="M155 420 V690 Q158 712 183 712 Q210 712 210 690 V620" ${line} stroke-width="1.2" data-draw />
+            <rect x="200" y="473" width="34" height="85" rx="6" ${line} stroke-width="1.2" data-draw />
+            <rect x="378" y="163" width="266" height="196" ${line} stroke-width="1.5" data-draw />
+            <path d="M378 262 H644" ${line} stroke-width="1.2" data-draw />
+            <path d="M512 190 h22 v68 h-22 Z M538 190 h22 v68 h-22 Z M567 203 h20 v55 h-20 Z M592 203 h20 v55 h-20 Z M405 288 h22 v68 h-22 Z M430 302 h12 v54 h-12 Z M448 307 h12 v50 h-12 Z M483 343 h34 v14 h-34 Z" ${line} stroke-width="1" opacity="0.8" data-draw />
+            <rect x="474" y="538" width="74" height="50" rx="6" ${line} stroke-width="1.2" data-draw />
+            <path d="M440 690 Q440 684 448 684 H558 Q566 684 566 690 L564 724 Q560 800 510 816 Q500 819 490 816 Q445 800 440 724 Z M440 712 H566" ${line} stroke-width="1.5" data-draw />
+            <path d="M408 630 V812" ${line} stroke-width="1" data-draw />
+            <rect x="578" y="660" width="46" height="12" ${line} stroke-width="1" data-draw />
+            <rect x="670" y="125" width="488" height="325" rx="24" ${line} stroke-width="1.5" data-draw />
+            <rect x="684" y="137" width="460" height="302" rx="16" ${line} stroke-width="1" data-draw />
+            <path d="M1085 0 V178 M1066 180 H1105 L1112 262 H1060 Z" ${line} stroke-width="1.2" data-draw />
+            <path d="M1110 0 V150 M1100 160 H1138 V255 H1110" ${line} stroke-width="1.2" data-draw />
+            <path d="M910 458 h20 v68 h-20 Z M910 462 h-14" ${line} stroke-width="1.2" data-draw />
+            <path d="M830 530 Q830 525 840 525 H1022 Q1032 525 1032 532 Q1025 572 931 572 Q838 572 830 532 Z" ${line} stroke-width="1.5" data-draw />
+            <path d="M660 566 H1200 M660 586 H1200" ${line} stroke-width="1.5" data-draw />
+            <path d="M700 586 Q660 586 660 626 V704 Q660 744 700 744 H1200" ${line} stroke-width="1.5" data-draw />
+            <rect x="793" y="590" width="305" height="73" ${line} stroke-width="1.2" data-draw />
+            <rect x="793" y="667" width="305" height="75" ${line} stroke-width="1.2" data-draw />
+            <path d="M912 606 H976 M912 686 H976" ${line} stroke-width="2" data-draw />
+            <path d="M1105 488 h50 v80 h-50 Z M686 522 h20 v46 h-20 Z M708 522 h20 v46 h-20 Z" ${line} stroke-width="1" data-draw />
+          `} />
+        </svg>
+
+        {callouts.map((c) => (
+          <span
+            class:list={["fb-tf__callout", { "fb-tf__callout--left": c.x >= 70 }]}
+            data-tf-callout={c.at}
+            style={`left:${c.x}%;top:${c.y}%`}
+          >
+            <span class="fb-tf__callout-in">
+              <span class="fb-tf__dot" aria-hidden="true"></span>
+              <span class="fb-tf__callout-text">{c.text}</span>
+            </span>
+          </span>
+        ))}
+
+        <span class="fb-tf__badge">Illustrative concept</span>
+      </div>
+      <figcaption class="fb-tf__caption">
+        Illustrative concept. The plan and elevation are drawn for this demo,
+        traced from an inspiration image to show the design process. They
+        are not a record of a real renovation. Image:
+        <a href={transformation.credit.href} rel="noopener" target="_blank">{transformation.credit.name} / Unsplash</a>.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .fb-tf {
+    position: relative;
+    z-index: 2;
+    /* Sticky scroll length for the four stages. */
+    height: calc(100svh + 230svh);
+    background: var(--fb-ivory);
+    border-top: 1px solid var(--fb-line);
+  }
+
+  .fb-tf__stage-wrap {
+    position: sticky;
+    top: var(--demo-bar-height);
+    height: calc(100svh - var(--demo-bar-height));
+    display: grid;
+    grid-template-columns: minmax(16rem, 4fr) 8fr;
+    gap: clamp(1.5rem, 3.5vw, 4rem);
+    align-items: center;
+    padding: clamp(1.5rem, 4vh, 3rem) var(--fb-gutter);
+    overflow: clip;
+  }
+
+  .fb-tf__title {
+    margin: 1.5rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2rem, 2.9vw, 3.4rem);
+    text-wrap: balance;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+
+  .fb-tf__title .fb-mask:nth-child(2) {
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-tf__steps {
+    display: grid;
+    gap: 1.1rem;
+    margin: clamp(1.75rem, 5vh, 3rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fb-tf__step {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.75rem;
+    opacity: 0.38;
+    transition: opacity 0.5s var(--fb-ease);
+  }
+
+  .fb-tf__step[aria-current="step"] {
+    opacity: 1;
+  }
+
+  .fb-tf__step-no {
+    font-family: var(--fb-serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    padding-top: 0.1rem;
+  }
+
+  .fb-tf__step-text {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-tf__step-text strong {
+    font-family: var(--fb-serif);
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: var(--fb-charcoal);
+  }
+
+  .fb-tf__progress {
+    position: relative;
+    height: 1px;
+    margin-top: 1.75rem;
+    background: var(--fb-line);
+  }
+
+  .fb-tf__progress span {
+    position: absolute;
+    inset: 0;
+    background: var(--fb-charcoal);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+
+  /* ---- Stage ----------------------------------------------------- */
+
+  .fb-tf__figure {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .fb-tf__stage {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    max-height: calc(100svh - var(--demo-bar-height) - 7rem);
+    margin-left: auto;
+    overflow: hidden;
+    color: #2a2622;
+    background: #f7f3ec;
+    box-shadow: 0 0 0 1px var(--fb-line);
+  }
+
+  /* Drafting paper: fine grid that fades as the photo arrives. */
+  .fb-tf__paper {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(42 38 34 / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(42 38 34 / 0.07) 1px, transparent 1px),
+      linear-gradient(rgb(42 38 34 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(42 38 34 / 0.035) 1px, transparent 1px);
+    background-size: 10% 13.333%, 10% 13.333%, 2.5% 3.333%, 2.5% 3.333%;
+  }
+
+  .fb-tf__photo {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  .fb-tf__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fb-tf__scan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: #f7f3ec;
+    box-shadow: 0 0 24px 6px rgb(255 244 224 / 0.55);
+    opacity: 0;
+  }
+
+  .fb-tf__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .fb-tf__plan-labels {
+    font-family: var(--fb-sans);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    fill: currentColor;
+  }
+
+  /* Before JS: show the finished state (photo + faint elevation). */
+  .fb-tf__plan {
+    opacity: 0;
+  }
+
+  .fb-tf__elev {
+    color: #fffaf2;
+    opacity: 0.4;
+    mix-blend-mode: screen;
+  }
+
+  .fb-tf__photo {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* Outer element is animated by GSAP; the inner one owns the offset
+     (GSAP folds a CSS translate on its target into its own transform). */
+  .fb-tf__callout {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .fb-tf__callout-in {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    translate: -0.45rem -50%;
+  }
+
+  /* Near the right edge, the label extends left of its dot instead. */
+  .fb-tf__callout--left .fb-tf__callout-in {
+    left: auto;
+    right: 0;
+    flex-direction: row-reverse;
+    translate: 0.45rem -50%;
+  }
+
+  .fb-tf__dot {
+    flex: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: rgb(247 243 236 / 0.9);
+    box-shadow:
+      0 0 0 1px #2a2622,
+      0 0 0 5px rgb(247 243 236 / 0.35);
+  }
+
+  .fb-tf__callout-text {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.74rem;
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+    color: var(--fb-charcoal);
+    background: rgb(247 243 236 / 0.94);
+    box-shadow: 0 6px 18px -10px rgb(20 18 15 / 0.5);
+  }
+
+  .fb-tf__badge {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fb-ivory);
+    background: rgb(31 29 26 / 0.82);
+  }
+
+  .fb-tf__caption {
+    margin-top: 0.85rem;
+    max-width: 52rem;
+    margin-left: auto;
+    font-size: 0.72rem;
+    line-height: 1.55;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-tf__caption a {
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  /* ---- Mobile: stage on top, steps beneath ----------------------- */
+
+  @media (max-width: 899px) {
+    .fb-tf {
+      height: calc(100svh + 170svh);
+    }
+
+    .fb-tf__stage-wrap {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr;
+      align-content: start;
+      gap: 1.25rem;
+      padding-top: 1.5rem;
+    }
+
+    .fb-tf__intro {
+      display: contents;
+    }
+
+    .fb-tf__intro > .fb-eyebrow {
+      order: 0;
+    }
+
+    .fb-tf__title {
+      order: 1;
+      margin: 0;
+      font-size: clamp(1.9rem, 8.6vw, 3rem);
+    }
+
+    .fb-tf__figure {
+      order: 2;
+    }
+
+    .fb-tf__steps {
+      order: 3;
+      display: grid;
+      margin: 0;
+    }
+
+    .fb-tf__step {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .fb-tf__step[aria-current="step"] {
+      opacity: 1;
+    }
+
+    .fb-tf__progress {
+      order: 4;
+      margin-top: 0;
+    }
+
+    .fb-tf__stage {
+      max-height: none;
+    }
+
+    .fb-tf__callout-text {
+      font-size: 0.64rem;
+      padding: 0.25rem 0.45rem;
+    }
+
+    .fb-tf__dot {
+      width: 0.7rem;
+      height: 0.7rem;
+    }
+
+    .fb-tf__caption {
+      font-size: 0.66rem;
+    }
+  }
+
+  /* ---- Reduced motion: one complete, static composition ---------- */
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-tf {
+      height: auto;
+    }
+
+    .fb-tf__stage-wrap {
+      position: relative;
+      top: 0;
+      height: auto;
+      padding-block: clamp(4rem, 12vh, 7rem);
+    }
+
+    .fb-tf__step,
+    .fb-tf__step[aria-current="step"] {
+      opacity: 1;
+      transition: none;
+    }
+
+    .fb-tf__progress {
+      display: none;
+    }
+
+    /* The plan isn't shown in the static version, so neither are its notes. */
+    .fb-tf__callout[data-tf-callout="0"] {
+      display: none;
+    }
+
+    @media (max-width: 899px) {
+      .fb-tf__step {
+        grid-area: auto;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,211 @@
+---
+// 01 The possibilities. A sticky stage (CSS, not a JS pin) holds the type
+// on screen while it's read; src/scripts/bathroom/possibilities.ts drives
+// the letters in as this panel rises over the hero, draws the dimension
+// line during the hold, then splits the two lines apart (one up, one down)
+// as the materials section arrives.
+const lineA = "Your space.";
+const lineB = "Reimagined.";
+const words = (text: string) => text.split(" ").map((word) => [...word]);
+---
+
+<section class="fb-poss fb-grain" id="possibilities" data-poss aria-labelledby="fb-poss-title">
+  <div class="fb-poss__stage" data-poss-stage>
+    <p class="fb-eyebrow fb-index fb-poss__index" data-poss-meta>
+      <span class="fb-index__num">01</span>
+      <span class="fb-index__rule" aria-hidden="true"></span>
+      The possibilities
+    </p>
+
+    <h2 class="fb-poss__title" id="fb-poss-title">
+      <span class="fb-sr">{lineA} {lineB}</span>
+      <span class="fb-poss__line fb-poss__line--a" aria-hidden="true" data-poss-line="a">
+        {words(lineA).map((chars) => (
+          <span class="fb-poss__word">
+            {chars.map((char) => <span class="fb-poss__char" data-poss-char>{char}</span>)}
+          </span>
+        ))}
+      </span>
+      <span class="fb-poss__line fb-poss__line--b" aria-hidden="true" data-poss-line="b">
+        {words(lineB).map((chars) => (
+          <span class="fb-poss__word">
+            {chars.map((char) => <span class="fb-poss__char" data-poss-char>{char}</span>)}
+          </span>
+        ))}
+      </span>
+    </h2>
+
+    <div class="fb-poss__measure" aria-hidden="true">
+      <span class="fb-poss__tick"></span>
+      <span class="fb-poss__dim" data-poss-dim></span>
+      <span class="fb-poss__tick"></span>
+    </div>
+
+    <p class="fb-poss__body" data-poss-meta>
+      Layout, light, storage and surfaces, reconsidered around the way you
+      actually use the room. Nothing assumed. Everything designed.
+    </p>
+  </div>
+</section>
+
+<style>
+  .fb-poss {
+    position: relative;
+    z-index: 2;
+    /* Sticky hold: the stage stays put for the extra height below. */
+    height: calc(100svh - var(--demo-bar-height) + 90svh);
+    background: var(--fb-ivory-deep);
+    border-top: 1px solid var(--fb-line);
+    --mx: 0;
+  }
+
+  /* While the desktop hero is pinned, this panel rises over its photo. */
+  :global(.fb.is-pinned) .fb-poss {
+    margin-top: -55vh;
+    box-shadow: 0 -40px 80px rgb(20 18 15 / 0.18);
+  }
+
+  .fb-poss__stage {
+    position: sticky;
+    top: var(--demo-bar-height);
+    height: calc(100svh - var(--demo-bar-height));
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto auto;
+    column-gap: clamp(1rem, 2vw, 2rem);
+    padding: clamp(2rem, 7vh, 4.5rem) var(--fb-gutter) clamp(2rem, 8vh, 5rem);
+    overflow: clip;
+  }
+
+  .fb-poss__index {
+    grid-column: 1 / -1;
+  }
+
+  .fb-poss__title {
+    grid-column: 1 / -1;
+    align-self: center;
+    margin: 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(3.4rem, 13.2vw, 15rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+  }
+
+  .fb-poss__line {
+    display: block;
+    overflow: clip;
+    padding: 0 0.04em 0.1em 0;
+    margin-bottom: -0.1em;
+    white-space: nowrap;
+  }
+
+  .fb-poss__line--a {
+    translate: calc(var(--mx) * -14px) 0;
+  }
+
+  .fb-poss__line--b {
+    padding-left: 18vw;
+    font-style: italic;
+    color: var(--fb-ink-soft);
+    translate: calc(var(--mx) * 26px) 0;
+  }
+
+  .fb-poss__word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .fb-poss__word + .fb-poss__word {
+    margin-left: 0.22em;
+  }
+
+  .fb-poss__char {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  /* Architectural dimension line under the type. */
+  .fb-poss__measure {
+    grid-column: 1 / span 7;
+    display: flex;
+    align-items: center;
+    height: 14px;
+    margin-top: clamp(1.25rem, 4vh, 2.5rem);
+    color: var(--fb-stone-dark);
+  }
+
+  .fb-poss__tick {
+    width: 1px;
+    height: 100%;
+    background: currentColor;
+  }
+
+  .fb-poss__dim {
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    transform-origin: 0 50%;
+  }
+
+  .fb-poss__body {
+    grid-column: 8 / span 4;
+    grid-row: 3 / span 2;
+    align-self: end;
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--fb-ink-soft);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 899px) {
+    .fb-poss {
+      height: calc(100svh - var(--demo-bar-height) + 45svh);
+    }
+
+    .fb-poss__stage {
+      grid-template-rows: auto 1fr auto auto;
+    }
+
+    .fb-poss__title {
+      font-size: clamp(3rem, 17vw, 7rem);
+      line-height: 0.95;
+    }
+
+    .fb-poss__line--b {
+      padding-left: 8vw;
+    }
+
+    .fb-poss__measure {
+      grid-column: 1 / -1;
+    }
+
+    .fb-poss__body {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      margin-top: 1.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-poss {
+      height: auto;
+    }
+
+    .fb-poss__stage {
+      position: relative;
+      top: 0;
+      height: auto;
+      min-height: 80svh;
+      row-gap: 2.5rem;
+    }
+
+    .fb-poss__line--a,
+    .fb-poss__line--b {
+      translate: none;
+    }
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+// FORM Bathrooms: a fictional bathroom brand, told as six chapters after
+// the hero. Each section owns its composition (components/bathroom/) and
+// its motion (scripts/bathroom/); scripts/bathroom/index.ts creates all
+// motion in page order inside one gsap.matchMedia() so desktop, mobile and
+// reduced-motion versions each get a complete, clean setup.
+import Layout from "../../layouts/Layout.astro";
+import DemoBar from "../../components/DemoBar.astro";
+import Hero from "../../components/bathroom/Hero.astro";
+import Possibilities from "../../components/bathroom/Possibilities.astro";
+import Materials from "../../components/bathroom/Materials.astro";
+import Transformation from "../../components/bathroom/Transformation.astro";
+import Details from "../../components/bathroom/Details.astro";
+import Gallery from "../../components/bathroom/Gallery.astro";
+import Invitation from "../../components/bathroom/Invitation.astro";
+import EnquiryDialog from "../../components/bathroom/EnquiryDialog.astro";
+import { heroImage } from "../../data/bathroom";
+import "../../styles/form.css";
+---
+
+<Layout
+  title="FORM Bathrooms: Renovation Website Demo | Stapled."
+  description="A design demo by Stapled. FORM Bathrooms is a fictional brand, not a real business, created to show a premium website for bathroom renovation companies."
+>
+  <Fragment slot="head">
+    <!-- The hero photo is the largest thing above the fold: fetch it before
+         the CSS and fonts finish, at the size this screen will use. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      imagesrcset={heroImage.srcset}
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
+    <!-- Hides the hero's intro elements only when the intro will actually
+         run (JS on, motion allowed). The script lifts this via .fb-ready;
+         the timeout is a safety net if the bundle never loads. -->
+    <script is:inline>
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const root = document.documentElement;
+        root.classList.add("fb-js");
+        setTimeout(() => root.classList.add("fb-ready"), 2500);
+      }
+    </script>
+  </Fragment>
+
+  <DemoBar current="bathroom" />
+
+  <main id="main" class="fb" data-fb>
+    <Hero />
+    <Possibilities />
+    <Materials />
+    <Transformation />
+    <Details />
+    <Gallery />
+    <Invitation />
+    <EnquiryDialog />
+  </main>
+</Layout>
+
+<script>
+  import { initBathroom } from "../../scripts/bathroom";
+
+  initBathroom();
+</script>

@@ -1,0 +1,263 @@
+---
+// 06 The final invitation. A calm charcoal close: a drafted frame draws
+// around the message, a warm light follows the cursor, and the only
+// actions lead to Stapled. (the real business behind this concept).
+// Ends with the photography credits for the whole page.
+// Behaviour: src/scripts/bathroom/invitation.ts.
+import { stapledEnquiryUrl, stapledUrl } from "../../data/demos";
+import { details, gallery, heroCredit, materialStyles, transformation } from "../../data/bathroom";
+
+// Every image on the page, in order of appearance.
+const credits = [
+  { label: "Hero", credit: heroCredit },
+  ...materialStyles.map((m) => ({ label: m.name, credit: m.credit })),
+  { label: "Transformation", credit: transformation.credit },
+  ...details.map((d) => ({ label: d.title, credit: d.credit })),
+  ...gallery.map((g, i) => ({ label: `Gallery ${i + 1}`, credit: g.credit })),
+];
+---
+
+<section class="fb-inv" id="contact" data-inv aria-labelledby="fb-inv-title">
+  <div class="fb-inv__light" aria-hidden="true"></div>
+
+  <div class="fb-inv__inner">
+    <span class="fb-inv__edge fb-inv__edge--t" aria-hidden="true" data-inv-edge="x"></span>
+    <span class="fb-inv__edge fb-inv__edge--r" aria-hidden="true" data-inv-edge="y"></span>
+    <span class="fb-inv__edge fb-inv__edge--b" aria-hidden="true" data-inv-edge="x"></span>
+    <span class="fb-inv__edge fb-inv__edge--l" aria-hidden="true" data-inv-edge="y"></span>
+
+    <p class="fb-eyebrow fb-index fb-inv__index" data-inv-fade>
+      <span class="fb-index__num">06</span>
+      <span class="fb-index__rule" aria-hidden="true"></span>
+      The final invitation
+    </p>
+
+    <h2 class="fb-inv__title" id="fb-inv-title">
+      <span class="fb-mask"><span data-inv-line>Your work deserves</span></span>
+      <span class="fb-mask"><span data-inv-line><em>to be seen like this.</em></span></span>
+    </h2>
+
+    <div class="fb-inv__body" data-inv-fade>
+      <p>
+        FORM Bathrooms is a concept by <strong>Stapled.</strong> The brand,
+        copy and buttons are illustrative, and no enquiries are sent
+        anywhere from this page.
+      </p>
+      <p>
+        If you run a bathroom, kitchen or renovation business and want a
+        website that presents your work with this level of care, Stapled.
+        designs and builds them.
+      </p>
+    </div>
+
+    <div class="fb-inv__actions" data-inv-fade>
+      <a href={stapledEnquiryUrl} class="fb-btn fb-inv__btn--solid">
+        Start an enquiry with Stapled.
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>
+      <a href={stapledUrl} class="fb-btn fb-inv__btn--line">Visit stapled.co.uk</a>
+    </div>
+  </div>
+
+  <footer class="fb-inv__foot">
+    <p>Concept website by Stapled. FORM Bathrooms is a fictional brand, not a real business.</p>
+    <details class="fb-inv__credits">
+      <summary>Photography credits ({credits.length} images, Unsplash License)</summary>
+      <p class="fb-inv__credits-note">All photographs show rooms by other people and are used here as inspiration only.</p>
+      <ul>
+        {credits.map((c) => (
+          <li>{c.label}: <a href={c.credit.href} rel="noopener" target="_blank">{c.credit.name}</a></li>
+        ))}
+      </ul>
+    </details>
+  </footer>
+</section>
+
+<style>
+  .fb-inv {
+    position: relative;
+    z-index: 2;
+    overflow: clip;
+    color: #f4efe7;
+    background: #1b1917;
+    --lx: 50%;
+    --ly: 40%;
+  }
+
+  .fb-inv::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--fb-grain);
+    opacity: 0.5;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .fb-inv__light {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(45vw 45vw at var(--lx) var(--ly), rgb(214 180 140 / 0.18), transparent 65%);
+    pointer-events: none;
+  }
+
+  .fb-inv__inner {
+    position: relative;
+    max-width: 68rem;
+    margin: clamp(5rem, 16vh, 10rem) auto clamp(3rem, 10vh, 6rem);
+    padding: clamp(2.5rem, 7vw, 6rem);
+    margin-inline: max(var(--fb-gutter), calc((100% - 68rem) / 2));
+  }
+
+  /* Drafted frame: four hairlines drawn in sequence by the script. */
+  .fb-inv__edge {
+    position: absolute;
+    background: rgb(244 239 231 / 0.28);
+  }
+
+  .fb-inv__edge--t,
+  .fb-inv__edge--b {
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+
+  .fb-inv__edge--l,
+  .fb-inv__edge--r {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+  }
+
+  .fb-inv__edge--t { top: 0; transform-origin: 0 50%; }
+  .fb-inv__edge--r { right: 0; transform-origin: 50% 0; }
+  .fb-inv__edge--b { bottom: 0; transform-origin: 100% 50%; }
+  .fb-inv__edge--l { left: 0; transform-origin: 50% 100%; }
+
+  .fb-inv__index {
+    color: rgb(244 239 231 / 0.65);
+  }
+
+  .fb-inv__index :global(.fb-index__num) {
+    color: #f4efe7;
+  }
+
+  .fb-inv__title {
+    margin: 2rem 0 0;
+    font-family: var(--fb-serif);
+    font-weight: 300;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2.6rem, 6.2vw, 6.5rem);
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+  }
+
+  .fb-inv__title .fb-mask:nth-child(2) {
+    color: rgb(244 239 231 / 0.7);
+  }
+
+  .fb-inv__body {
+    display: grid;
+    gap: 1rem;
+    max-width: 36rem;
+    margin-top: clamp(2rem, 5vh, 3rem);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgb(244 239 231 / 0.78);
+  }
+
+  .fb-inv__body strong {
+    font-weight: 600;
+    color: #f4efe7;
+  }
+
+  .fb-inv__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: clamp(2rem, 5vh, 3rem);
+  }
+
+  .fb-inv__btn--solid {
+    color: #1b1917;
+    background: #f4efe7;
+    border: 1px solid #f4efe7;
+  }
+
+  .fb-inv__btn--solid:hover {
+    background: #fffaf2;
+  }
+
+  .fb-inv__btn--solid:hover svg {
+    transform: translateX(3px);
+  }
+
+  .fb-inv__btn--line {
+    color: #f4efe7;
+    background: transparent;
+    border: 1px solid rgb(244 239 231 / 0.4);
+  }
+
+  .fb-inv__btn--line:hover {
+    border-color: #f4efe7;
+    background: rgb(244 239 231 / 0.06);
+  }
+
+  .fb-inv a:focus-visible,
+  .fb-inv summary:focus-visible {
+    outline: 2px solid #f4efe7;
+    outline-offset: 3px;
+  }
+
+  .fb-inv__foot {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1.75rem var(--fb-gutter) 2.25rem;
+    font-size: 0.78rem;
+    color: rgb(244 239 231 / 0.6);
+    border-top: 1px solid rgb(244 239 231 / 0.12);
+  }
+
+  .fb-inv__foot p {
+    margin: 0;
+  }
+
+  .fb-inv__credits summary {
+    cursor: pointer;
+    color: rgb(244 239 231 / 0.8);
+  }
+
+  .fb-inv__credits ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    max-width: 36rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fb-inv__credits-note {
+    margin: 0.75rem 0 0;
+    max-width: 36rem;
+  }
+
+  .fb-inv__credits a {
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 899px) {
+    .fb-inv__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .fb-inv__inner {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>

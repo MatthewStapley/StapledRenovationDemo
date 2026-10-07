@@ -1,0 +1,88 @@
+---
+// "Discuss your project" never contacts the fictional FORM brand: it opens
+// this explanation and points to Stapled.'s real enquiry form instead.
+import { stapledEnquiryUrl } from "../../data/demos";
+---
+
+<dialog class="fb-dialog" data-enquiry-dialog aria-labelledby="fb-dialog-title">
+  <form method="dialog" class="fb-dialog__inner">
+    <p class="fb-eyebrow">Concept website</p>
+    <h2 class="fb-dialog__title" id="fb-dialog-title">FORM Bathrooms isn't a real business</h2>
+    <p>
+      So there's nowhere to send a project enquiry, and this demo
+      doesn't collect any details. On a finished site, this button would
+      open the business's own enquiry form.
+    </p>
+    <p>
+      Run a renovation business and want a site like this? Stapled.
+      designs and builds them.
+    </p>
+    <div class="fb-dialog__actions">
+      <a href={stapledEnquiryUrl} class="fb-btn fb-btn--solid">Talk to Stapled.</a>
+      <button type="submit" class="fb-btn fb-btn--line" autofocus>Close</button>
+    </div>
+  </form>
+</dialog>
+
+<style>
+  .fb-dialog {
+    width: min(32rem, calc(100vw - 2rem));
+    padding: 0;
+    border: 1px solid var(--fb-line);
+    border-radius: 0;
+    color: var(--fb-charcoal);
+    background: var(--fb-ivory);
+    box-shadow: 0 30px 80px rgb(20 18 15 / 0.3);
+  }
+
+  .fb-dialog::backdrop {
+    background: rgb(20 18 15 / 0.55);
+  }
+
+  .fb-dialog[open] {
+    animation: fb-dialog-in 0.45s var(--fb-ease);
+  }
+
+  .fb-dialog__inner {
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--fb-ink-soft);
+  }
+
+  .fb-dialog__inner p {
+    margin: 1rem 0 0;
+  }
+
+  .fb-dialog__inner .fb-eyebrow {
+    margin: 0;
+  }
+
+  .fb-dialog__title {
+    margin: 0.75rem 0 0;
+    font-family: var(--fb-serif);
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--fb-charcoal);
+  }
+
+  .fb-dialog__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  @keyframes fb-dialog-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-dialog[open] {
+      animation: none;
+    }
+  }
+</style>

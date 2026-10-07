@@ -1,0 +1,23 @@
+---
+// The demo's root has no content of its own: it forwards to the first
+// available room. A meta refresh (not a server redirect) because GitHub
+// Pages is static hosting; the visible link covers anything that blocks it.
+import { asset } from "../data/assets";
+
+const target = asset("/bathroom/");
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Renovation demo | Stapled.</title>
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+  </head>
+  <body>
+    <p><a href={target}>Go to the bathroom demo</a></p>
+  </body>
+</html>
